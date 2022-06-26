@@ -50,13 +50,14 @@ class RetrieveTopThousandStreamsCommand extends Command
 
         $streams->each(function ($item, $key) {
             Stream::updateOrCreate([
-                'stream_id'    => $item->id
+                'stream_id' => $item->id
             ], [
                 'channel_name' => $item->user_name,
                 'stream_title' => $item->title,
                 'game'         => $item->game_name,
                 'viewer_count' => $item->viewer_count,
                 'start_time'   => Carbon::parse($item->started_at),
+                'tags'         => collect($item->tag_ids)->toJson(),
                 'top_thousand' => 1
             ]);
         });

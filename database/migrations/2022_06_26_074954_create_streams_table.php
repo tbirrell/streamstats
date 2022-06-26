@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('game');
             $table->integer('viewer_count');
             $table->dateTime('start_time');
+            $table->string('tags', 1024)->nullable();
             $table->boolean('top_thousand');
             $table->timestamps();
         });

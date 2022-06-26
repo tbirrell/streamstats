@@ -1,64 +1,49 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Streamlabs Assignment
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Thank you for choosing to invest your time in this assignment.  We recognize it’s difficult to find the time to complete a coding assignment, and we value your time and investment in this process with us.
 
-## About Laravel
+## Stack
+The technology you use is up to you, at Streamlabs we mainly make use of PHP, Laravel, Vue, React, TypeScript, MySQL. Please do not use NodeJS to complete the project.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Application: Top StreamStats App
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+You will build an application called “StreamStats”. This application is aimed at helping Twitch viewers get a quick look at how the channels they watch compare to the top 1000 live streams. They will log into your application with a Twitch account via an OAuth flow that you will implement. 
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+A user has the following pieces of information that have to be stored:
+- Twitch Id
+- Email
+- Username
 
-## Learning Laravel
+The stats will show a comparison between the streams they are watching and the top 1000 current live streams. For the purpose of this assignment, you will seed the database with data from the Twitch (Helix) API about top live streams. Shuffle this data before inserting.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+A stream has several pieces of information that have to be stored:
+- Channel name
+- Stream title
+- Game name
+- Number of viewers
+- When it started
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Once a user is logged in display the following information to the user:
+- Total number of streams for each game
+- Top games by viewer count for each game
+- Median number of viewers for all streams
+- List of top 100 streams by viewer count that can be sorted asc & desc
+- Total number of streams by their start time (rounded to the nearest hour)
+- Which of the top 1000 streams is the logged in user following?
+- How many viewers does the lowest viewer count stream that the logged in user is following need to gain in order to make it into the top 1000?
+- Which tags are shared between the user followed streams and the top 1000 streams? Also make sure to translate the tags to their respective name?
 
-## Laravel Sponsors
+For the above statistics calculate half of them through database queries and the other half in the application layer (aggregate using arrays instead of queries).  
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+When it comes to authentication make sure to have the user’s logged in session expire after a 1 hour period so they are forced to login again.
 
-### Premium Partners
+For the final portion of the assignment setup a cronjob that refreshed the streams data every 15 minutes.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+## UX
+Build a simple SPA (Single Page Application) using Javascript & CSS to visualize the data.
 
-## Contributing
+## Deliverables
+This is a take-home assignment and you should not spend more than 8 hours on the project. 
+The code is to be published on a public github repository for our team to access. Make sure that we can see your progress in your commit history, a single commit is not enough.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+In order to demo the application you can either submit a short video showing us the entire flow and the results or you can host it anywhere on the web for us to access it.

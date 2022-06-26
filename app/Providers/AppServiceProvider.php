@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +24,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Http::macro('helix', function () {
+            return Http::withHeaders([
+                'Client-Id' => env('TWITCH_CLIENT_ID')
+            ])->baseUrl('https://api.twitch.tv/helix');
+        });
     }
 }

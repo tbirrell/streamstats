@@ -47,3 +47,5 @@ This is a take-home assignment and you should not spend more than 8 hours on the
 The code is to be published on a public github repository for our team to access. Make sure that we can see your progress in your commit history, a single commit is not enough.
 
 In order to demo the application you can either submit a short video showing us the entire flow and the results or you can host it anywhere on the web for us to access it.
+
+### [See Video Here](https://github.com/tbirrell/streamstats/blob/master/screencast-localhost-2022.06.27-03_05_22.mp4)

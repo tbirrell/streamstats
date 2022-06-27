@@ -21,8 +21,6 @@ class TwitchLoginController extends Controller
     {
         $twitchUser = Socialite::driver('twitch')->user();
 
-//        dd($twitchUser);
-
         $user = User::updateOrCreate([
             'twitch_id' => $twitchUser->id,
         ], [

@@ -23718,6 +23718,27 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   },
   data: function data() {
     return {
+      topGamesByViewerHeaders: [{
+        text: "Game",
+        value: "game"
+      }, {
+        text: "Viewers",
+        value: "viewers"
+      }],
+      totalStreamsByGameHeaders: [{
+        text: "Game",
+        value: "game"
+      }, {
+        text: "Stream Count",
+        value: "streams"
+      }],
+      streamsByStartTimeHeaders: [{
+        text: "Started",
+        value: "hours"
+      }, {
+        text: "Stream Count",
+        value: "count"
+      }],
       top100StreamsHeaders: [{
         text: "Channel",
         value: "channel_name"
@@ -23731,17 +23752,29 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         text: "Viewer Count",
         value: "viewer_count",
         sortable: true
-      }, // {text: "", value: "tags" },
-      {
+      }, {
         text: "Start Time",
         value: "start_time"
       }],
-      streamsByStartTimeHeaders: [{
-        text: "Started",
-        value: "hours"
+      followedTop1000Headers: [{
+        text: "Channel",
+        value: "user_name"
       }, {
-        text: "Stream Count",
-        value: "count"
+        text: "Title",
+        value: "title"
+      }, {
+        text: "Game",
+        value: "game_name"
+      }, {
+        text: "Viewer Count",
+        value: "viewer_count"
+      }, {
+        text: "Start Time",
+        value: "started_at"
+      }],
+      sharedTagsHeaders: [{
+        text: "Tag Name",
+        value: "tag"
       }]
     };
   },
@@ -23778,6 +23811,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         var s = this.allStreams.find(function (topStream) {
           return parseInt(topStream.stream_id) === parseInt(userStream.id);
         });
+        var end = luxon__WEBPACK_IMPORTED_MODULE_2__.DateTime.now().setZone("utc");
+        var start = luxon__WEBPACK_IMPORTED_MODULE_2__.DateTime.fromISO(userStream.started_at, {
+          zone: "utc"
+        });
+        var diff = end.diff(start, ['hours', 'minutes']);
+        var hours = diff.minutes >= 30 ? diff.hours + 1 : diff.hours;
+        userStream.started_at = this.textTimeAgo(hours);
 
         if (typeof s !== 'undefined') {
           followedTop1000.push(userStream);
@@ -23786,6 +23826,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       return followedTop1000;
     },
     lowestStreamNeeds: function lowestStreamNeeds() {
+      //this will break if the user has no non-1000 followed streams
       var userStream = this.userStreams.reduce(function (prev, curr) {
         return prev.viewer_count < curr.viewer_count ? prev : curr;
       });
@@ -23805,11 +23846,15 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         return self.indexOf(value) === index;
       });
       var sharedTags = myTags.map(function (tag) {
-        return _this.tags[tag];
-      }).filter(Boolean);
+        return {
+          tag: _this.tags[tag]
+        };
+      }).filter(function (tag) {
+        return !!tag.tag;
+      });
       return sharedTags;
     },
-    top100WithFormatedDate: function top100WithFormatedDate() {
+    top100WithFormattedDate: function top100WithFormattedDate() {
       var _this2 = this;
 
       this.top100Streams.map(function (stream) {
@@ -23822,6 +23867,21 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         stream.start_time = _this2.textTimeAgo(hours);
         return stream;
       });
+      return this.top100Streams;
+    },
+    topGamesByViewerArray: function topGamesByViewerArray() {
+      return Object.keys(this.topGamesByViewer).map(function (key) {
+        return {
+          game: this.topGamesByViewer[key].game,
+          viewers: parseInt(this.topGamesByViewer[key].viewers) //idk why this is necessary but I don't feel like debugging it anymore
+
+        };
+      }, this);
+    },
+    totalStreamsByGameArray: function totalStreamsByGameArray() {
+      return Object.keys(this.totalStreamsByGame).map(function (key) {
+        return this.totalStreamsByGame[key];
+      }, this);
     }
   },
   methods: {
@@ -23858,19 +23918,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
-var _hoisted_1 = {
-  "class": "container mx-auto px-4 py-2"
-};
 
-var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h1", {
+var _hoisted_1 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+  "class": "container mx-auto px-4 py-2"
+}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h1", {
   "class": "font-medium leading-tight text-5xl mt-0 mb-2 text-blue-600"
-}, "StreamStats", -1
+}, "StreamStats")], -1
 /* HOISTED */
 );
 
+var _hoisted_2 = {
+  "class": "container mx-auto px-4 py-2"
+};
+
 var _hoisted_3 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", {
   "class": "font-medium leading-tight text-3xl mt-0 mb-2 text-blue-600"
-}, "Top 100 Streams", -1
+}, "Stream Count by Game", -1
 /* HOISTED */
 );
 
@@ -23880,24 +23943,88 @@ var _hoisted_4 = {
 
 var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", {
   "class": "font-medium leading-tight text-3xl mt-0 mb-2 text-blue-600"
+}, "Viewer Count by Game", -1
+/* HOISTED */
+);
+
+var _hoisted_6 = {
+  "class": "container mx-auto px-4 py-2"
+};
+var _hoisted_7 = {
+  "class": "font-medium leading-tight text-3xl mt-0 mb-2 text-blue-600"
+};
+var _hoisted_8 = {
+  "class": "container mx-auto px-4 py-2"
+};
+
+var _hoisted_9 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", {
+  "class": "font-medium leading-tight text-3xl mt-0 mb-2 text-blue-600"
 }, "Stream Count By Start Time", -1
 /* HOISTED */
 );
 
-var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"container mx-auto px-4 py-2\"><h2 class=\"font-medium leading-tight text-3xl mt-0 mb-2 text-blue-600\"></h2></div><div class=\"container mx-auto px-4 py-2\"><h2 class=\"font-medium leading-tight text-3xl mt-0 mb-2 text-blue-600\"></h2></div><div class=\"container mx-auto px-4 py-2\"><h2 class=\"font-medium leading-tight text-3xl mt-0 mb-2 text-blue-600\"></h2></div><div class=\"container mx-auto px-4 py-2\"><h2 class=\"font-medium leading-tight text-3xl mt-0 mb-2 text-blue-600\"></h2></div><div class=\"container mx-auto px-4 py-2\"><h2 class=\"font-medium leading-tight text-3xl mt-0 mb-2 text-blue-600\"></h2></div>", 5);
+var _hoisted_10 = {
+  "class": "container mx-auto px-4 py-2"
+};
+
+var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", {
+  "class": "font-medium leading-tight text-3xl mt-0 mb-2 text-blue-600"
+}, "Top 100 Streams", -1
+/* HOISTED */
+);
+
+var _hoisted_12 = {
+  "class": "container mx-auto px-4 py-2"
+};
+
+var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", {
+  "class": "font-medium leading-tight text-3xl mt-0 mb-2 text-blue-600"
+}, "Top 1000 Followed by User", -1
+/* HOISTED */
+);
+
+var _hoisted_14 = {
+  "class": "container mx-auto px-4 py-2"
+};
+var _hoisted_15 = {
+  "class": "font-medium leading-tight text-3xl mt-0 mb-2 text-blue-600"
+};
+var _hoisted_16 = {
+  "class": "container mx-auto px-4 py-2"
+};
+
+var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", {
+  "class": "font-medium leading-tight text-3xl mt-0 mb-2 text-blue-600"
+}, "Shared Tags", -1
+/* HOISTED */
+);
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_EasyDataTable = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("EasyDataTable");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [_hoisted_2, _hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_EasyDataTable, {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [_hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_EasyDataTable, {
     "buttons-pagination": "",
     "theme-color": "#2563eb",
     "rows-per-page": 10,
-    headers: _ctx.top100StreamsHeaders,
-    items: $props.top100Streams
+    headers: _ctx.totalStreamsByGameHeaders,
+    items: $options.totalStreamsByGameArray,
+    "sort-by": "streams",
+    "sort-type": "desc"
   }, null, 8
   /* PROPS */
   , ["headers", "items"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [_hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_EasyDataTable, {
+    "buttons-pagination": "",
+    "theme-color": "#2563eb",
+    "rows-per-page": 10,
+    headers: _ctx.topGamesByViewerHeaders,
+    items: $options.topGamesByViewerArray,
+    "sort-by": "viewers",
+    "sort-type": "desc"
+  }, null, 8
+  /* PROPS */
+  , ["headers", "items"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", _hoisted_7, "Median Viewer Count: " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.medianViewers), 1
+  /* TEXT */
+  )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [_hoisted_9, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_EasyDataTable, {
     "buttons-pagination": "",
     "theme-color": "#2563eb",
     "rows-per-page": 10,
@@ -23906,7 +24033,33 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "sort-by": "hourSort"
   }, null, 8
   /* PROPS */
-  , ["headers", "items"])]), _hoisted_6], 64
+  , ["headers", "items"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [_hoisted_11, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_EasyDataTable, {
+    "buttons-pagination": "",
+    "theme-color": "#2563eb",
+    "rows-per-page": 10,
+    headers: _ctx.top100StreamsHeaders,
+    items: $options.top100WithFormattedDate
+  }, null, 8
+  /* PROPS */
+  , ["headers", "items"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [_hoisted_13, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_EasyDataTable, {
+    "buttons-pagination": "",
+    "theme-color": "#2563eb",
+    "rows-per-page": 10,
+    headers: _ctx.followedTop1000Headers,
+    items: $options.followedTop1000
+  }, null, 8
+  /* PROPS */
+  , ["headers", "items"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_14, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", _hoisted_15, "Lowest user-followed stream needs " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.lowestStreamNeeds) + " viewers to reach top 1000 live streams", 1
+  /* TEXT */
+  )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, [_hoisted_17, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_EasyDataTable, {
+    "buttons-pagination": "",
+    "theme-color": "#2563eb",
+    "rows-per-page": 10,
+    headers: _ctx.sharedTagsHeaders,
+    items: $options.sharedTags
+  }, null, 8
+  /* PROPS */
+  , ["headers", "items"])])], 64
   /* STABLE_FRAGMENT */
   );
 }

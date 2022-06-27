@@ -15,6 +15,8 @@ export default {
         medianViewers: Number,
         top100Streams: Array,
         allStreams: Array,
+        'userStreams': Array,
+        'tags': Object
     },
     data: () => ({
         userStreams: null

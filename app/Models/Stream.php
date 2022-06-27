@@ -19,4 +19,8 @@ class Stream extends Model
         'top_thousand'
     ];
 
+    protected $casts = [
+      'tags' => 'array'
+    ];
+
 }

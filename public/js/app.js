@@ -23698,7 +23698,9 @@ __webpack_require__.r(__webpack_exports__);
     topGamesByViewer: Object,
     medianViewers: Number,
     top100Streams: Array,
-    allStreams: Array
+    allStreams: Array,
+    'userStreams': Array,
+    'tags': Object
   },
   data: function data() {
     return {

@@ -23690,6 +23690,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _inertiajs_inertia_vue3__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @inertiajs/inertia-vue3 */ "./node_modules/@inertiajs/inertia-vue3/dist/index.js");
 /* harmony import */ var luxon__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! luxon */ "./node_modules/luxon/build/cjs-browser/luxon.js");
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -23699,12 +23711,11 @@ __webpack_require__.r(__webpack_exports__);
     medianViewers: Number,
     top100Streams: Array,
     allStreams: Array,
-    'userStreams': Array,
-    'tags': Object
+    userStreams: Array,
+    tags: Object
   },
   data: function data() {
-    return {
-      userStreams: null
+    return {//
     };
   },
   computed: {
@@ -23727,23 +23738,45 @@ __webpack_require__.r(__webpack_exports__);
       return res;
     },
     followedTop1000: function followedTop1000() {
-      return [];
+      var followedTop1000 = [];
+      this.userStreams.forEach(function (userStream) {
+        var s = this.allStreams.find(function (topStream) {
+          return parseInt(topStream.stream_id) === parseInt(userStream.id);
+        });
+        console.log(s);
+
+        if (typeof s !== 'undefined') {
+          followedTop1000.push(userStream);
+        }
+      }, this);
+      return followedTop1000;
     },
     lowestStreamNeeds: function lowestStreamNeeds() {
-      return 101;
+      var userStream = this.userStreams.reduce(function (prev, curr) {
+        return prev.viewer_count < curr.viewer_count ? prev : curr;
+      });
+      var top1000 = this.top100Streams.reduce(function (prev, curr) {
+        return prev.viewer_count < curr.viewer_count ? prev : curr;
+      });
+      return top1000.viewer_count - userStream.viewer_count;
     },
     sharedTags: function sharedTags() {
-      return [];
+      var _this = this;
+
+      var myTags = [];
+      this.userStreams.forEach(function (userStream) {
+        myTags = [].concat(_toConsumableArray(myTags), _toConsumableArray(userStream.tag_ids));
+      }, this);
+      myTags = myTags.filter(function (value, index, self) {
+        return self.indexOf(value) === index;
+      });
+      var sharedTags = myTags.map(function (tag) {
+        return _this.tags[tag];
+      }).filter(Boolean);
+      return sharedTags;
     }
   },
-  methods: {
-    getUserStreams: function getUserStreams() {
-      if (!this.userStreams) {//
-      } else {
-        return this.userStreams;
-      }
-    }
-  }
+  methods: {}
 });
 
 /***/ }),

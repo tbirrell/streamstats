@@ -29,7 +29,7 @@ class HomeController extends Controller
     protected function userStreams()
     {
         //todo needs to be able to handle more than the default 100
-        return Http::helix()->withToken(auth()->user()->token)->get('/streams/followed', ['user_id' => auth()->user()->twitch_id])->object();
+        return Http::helix()->withToken(auth()->user()->token)->get('/streams/followed', ['user_id' => auth()->user()->twitch_id])->object()->data;
     }
 
     protected function tags()

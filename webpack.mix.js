@@ -11,12 +11,22 @@ const mix = require('laravel-mix');
  |
  */
 
+mix.webpackConfig({
+    stats: {
+        children: true,
+    },
+});
+
 mix.js('resources/js/app.js', 'public/js')
     .vue()
     .postCss('resources/css/app.css', 'public/css', [require('tailwindcss'), require('autoprefixer')])
     .alias({
         '@': 'resources/js',
-    });
+    }).webpackConfig({
+    stats: {
+        children: true,
+    },
+});
 
 if (mix.inProduction()) {
     mix.version();
